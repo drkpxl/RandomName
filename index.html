@@ -20,14 +20,18 @@
     <meta name="application-name" content="Random Name Selector">
     <meta name="msapplication-TileColor" content="#007bff">
     <meta name="msapplication-navbutton-color" content="#007bff">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
         <h1>Random Name Selector</h1>
+        <p>Enter a list of name you want to include and let the power of the internet select a random name for you. Once a name is selected it is removed from the current list and won't be selected a 2nd time. Don't worry your names are saved locally on your computer so you won't need to enter them every time</p>
         <div id="toast" class="toast"></div>
         <div class="name-list-container">
-            <label for="name-list">Name List:</label>
+            <label for="name-list">Name List</label>
             <textarea id="name-list" rows="20" placeholder="Enter names, one per line"></textarea>
         </div>
 
@@ -35,7 +39,7 @@
             <span id="selected-name">Press the button to pick a name</span>
         </div>
 
-        <button class="button" onclick="pickRandomName()">Pick a Random Name</button>
+        <button class="button" onclick="pickRandomName()">Randomize</button>
     </div>
 
     

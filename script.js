@@ -98,6 +98,8 @@ function setRandomGradient() {
   const randomIndex = Math.floor(Math.random() * gradients.length);
   const selectedGradient = gradients[randomIndex];
   document.body.style.background = selectedGradient;
+  document.getElementsByClassName('button')[0].style.background = selectedGradient;
+  document.getElementById('selected-name').style.color = selectedGradient;
 }
 
 // Modify the window.onload function to include setRandomGradient

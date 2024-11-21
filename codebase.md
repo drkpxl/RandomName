@@ -57,14 +57,18 @@ This is a binary file of the type: Image
     <meta name="application-name" content="Random Name Selector">
     <meta name="msapplication-TileColor" content="#007bff">
     <meta name="msapplication-navbutton-color" content="#007bff">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
         <h1>Random Name Selector</h1>
-
+        <p>Enter a list of name you want to include and let the power of the internet select a random name for you. Once a name is selected it is removed from the current list and won't be selected a 2nd time. Don't worry your names are saved locally on your computer so you won't need to enter them every time</p>
+        <div id="toast" class="toast"></div>
         <div class="name-list-container">
-            <label for="name-list">Name List:</label>
+            <label for="name-list">Name List</label>
             <textarea id="name-list" rows="20" placeholder="Enter names, one per line"></textarea>
         </div>
 
@@ -72,10 +76,10 @@ This is a binary file of the type: Image
             <span id="selected-name">Press the button to pick a name</span>
         </div>
 
-        <button class="button" onclick="pickRandomName()">Pick a Random Name</button>
+        <button class="button" onclick="pickRandomName()">Randomize</button>
     </div>
 
-    <div id="toast" class="toast"></div>
+    
 
     <script src="script.js"></script>
 </body>
@@ -113,6 +117,8 @@ function loadNames() {
   if (savedNames) {
     document.getElementById('name-list').value = savedNames;
     initializeAvailableNames();
+  } else {
+    availableNames = [];
   }
 }
 
@@ -124,30 +130,16 @@ function saveNames() {
 
 // Function to initialize available names
 function initializeAvailableNames() {
-  const nameList = document.getElementById('name-list').value.trim().split('\n');
-  availableNames = nameList.filter(name => name.trim() !== '');
+  const nameList = document.getElementById('name-list').value.trim().split('\n').filter(name => name.trim() !== '');
+  availableNames = nameList;
 }
 
 // Function to pick a random name
 function pickRandomName() {
-  // Get current list of names
-  const currentNames = document.getElementById('name-list')
-    .value.trim()
-    .split('\n')
-    .filter(name => name.trim() !== '');
-
-  // Check if there are any names
-  if (currentNames.length === 0) {
-    alert('Please add some names to the list!');
+  // Check if availableNames is empty
+  if (availableNames.length === 0) {
+    showToast('All names have been used! Please refresh the page to get the full list again.');
     return;
-  }
-
-  // Reset available names if empty or if list has changed
-  if (availableNames.length === 0 || !arraysMatch(availableNames, currentNames)) {
-    availableNames = [...currentNames];
-    if (document.getElementById('selected-name').textContent !== 'Press the button to pick a name') {
-      showToast('All names have been used! Starting fresh with the full list.');
-    }
   }
 
   // Pick and remove a random name
@@ -162,19 +154,13 @@ function pickRandomName() {
   console.log('Available names:', availableNames);
 }
 
-// Helper function to compare arrays
-function arraysMatch(arr1, arr2) {
-  return arr1.length === arr2.length && 
-         arr1.every(item => arr2.includes(item)) &&
-         arr2.every(item => arr1.includes(item));
-}
-
 // Function to launch confetti
 function launchConfetti() {
   confetti({
-    particleCount: 300,
-    spread: 70,
-    origin: { y: 0.6 },
+    particleCount: 500,
+    spread: 200,
+    origin: { y: .8 },
+    shape: ['star', 'square', 'circle'],
   });
 }
 
@@ -184,16 +170,47 @@ document.getElementById('name-list').addEventListener('input', () => {
   initializeAvailableNames();
 });
 
-// Initialize on page load
-window.onload = loadNames;
+
+
+const gradients = [
+  'linear-gradient(135deg, #74ebd5, #acb6e5)',
+  'linear-gradient(135deg, #ff9a9e, #fad0c4)',
+  'linear-gradient(135deg, #a18cd1, #fbc2eb)',
+  'linear-gradient(135deg, #f093fb, #f5576c)',
+  'linear-gradient(135deg, #4facfe, #00f2fe)',
+  'linear-gradient(135deg, #43e97b, #38f9d7)',
+  'linear-gradient(135deg, #fa709a, #fee140)',
+  'linear-gradient(135deg, #30cfd0, #330867)',
+  'linear-gradient(135deg, #a1c4fd, #c2e9fb)',
+  'linear-gradient(135deg, #fdcbf1, #e6dee9)',
+];
+
+// Function to set a random background gradient
+function setRandomGradient() {
+  const randomIndex = Math.floor(Math.random() * gradients.length);
+  const selectedGradient = gradients[randomIndex];
+  document.body.style.background = selectedGradient;
+  document.getElementsByClassName('button')[0].style.background = selectedGradient;
+  document.getElementById('selected-name').style.color = selectedGradient;
+}
+
+// Modify the window.onload function to include setRandomGradient
+window.onload = function() {
+  loadNames();
+  setRandomGradient();
+};
 ```
 
 # styles.css
 
 ```css
+
+
+
 body {
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(135deg, #74ebd5, #acb6e5);
+  font-family: "Atkinson Hyperlegible", serif;
+  font-weight: 400;
+  /* background: linear-gradient(135deg, #74ebd5, #acb6e5); */ 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -202,6 +219,7 @@ body {
   color: #333;
   padding: 1rem;
   box-sizing: border-box;
+  font-size: 1.1rem;
 }
 
 .container {
@@ -217,18 +235,25 @@ body {
 
 h1 {
   margin-bottom: 1.5rem;
-  font-size: 2rem;
+  font-size: 2.5rem;
+  font-family: "Atkinson Hyperlegible", serif;
+  font-weight: 700;
 }
 
 .name-list-container {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   text-align: left;
+}
+p {
+  text-align: justify;
+  margin-bottom: 1.2rem;
 }
 
 label {
   display: block;
   font-weight: bold;
   margin-bottom: 0.5rem;
+  font-size: 1.3rem;
 }
 
 #name-list {
@@ -236,7 +261,7 @@ label {
   padding: 0.75rem;
   border: 2px solid #6c757d;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   resize: none;
   box-sizing: border-box;
 }
@@ -260,7 +285,9 @@ label {
   color: #fff;
   border: none;
   padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  stroke-width: 1px;
   cursor: pointer;
   border-radius: 5px;
   transition: background 0.3s ease;
@@ -272,7 +299,6 @@ label {
 
 .toast {
   position: fixed;
-  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.8);
